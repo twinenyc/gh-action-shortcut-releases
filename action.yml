@@ -1,0 +1,16 @@
+name: 'Shortcut Release Workflow'
+description: 'Update shortcut based on a release'
+inputs:
+  shortcutAccessToken:
+    description: 'Who to greet'
+    required: true
+  shortcutCompletedStateId:
+    description: 'The ID of the shortcut state to transition tickets to'
+    required: false
+  commentOnTicket:
+    description: 'Should the job comment on the shortcut ticket'
+    required: true
+    default: 'true'
+runs:
+  using: 'node16'
+  main: 'src/index.js'

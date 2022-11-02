@@ -48,7 +48,9 @@ try {
     .then((stories) => {
       console.log("Updated stories", stories)
     })
-    .catch((err) => console.error(err))
+    .catch((err) => {
+      core.setFailed(err);
+    })
 
 } catch (error) {
   core.setFailed(error.message);

@@ -2,7 +2,7 @@ name: "Test workflow"
 
 on:
   release:
-    types: ["edited"]
+    types: ["published"]
 
 jobs:
   hello_world_job:
@@ -14,6 +14,6 @@ jobs:
       - name: Shortcut workflow
         uses: ./ # Uses an action in the root directory
         with:
-          shortcutAccessToken: ${secrets.SHORTCUT_ACCESS_TOKEN}
+          shortcutAccessToken: ${{ secrets.SHORTCUT_ACCESS_TOKEN }}
           shortcutCompletedStateId: 500003738
           commentOnTicket: true

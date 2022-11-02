@@ -15693,7 +15693,9 @@ try {
     .then((stories) => {
       console.log("Updated stories", stories)
     })
-    .catch((err) => console.error(err))
+    .catch((err) => {
+      _actions_core__WEBPACK_IMPORTED_MODULE_1__.setFailed(err);
+    })
 
 } catch (error) {
   _actions_core__WEBPACK_IMPORTED_MODULE_1__.setFailed(error.message);

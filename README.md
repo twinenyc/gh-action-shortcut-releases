@@ -1,24 +1,26 @@
 # GitHub action: Shortcut Release workflow
 
+This github action will update tickets in shortcut 
 
 ## Inputs
 
 ### `shortcutAccessToken`
 
-**Required** The shortcut access token
+**Required** The shortcut access token.
 
 ### `shortcutCompletedStateId`
 
-**Required** The ID of the shortcut state to transition tickets to.
+**Optional** The ID of the shortcut state to transition tickets to. If this is omitted, the ticket will not be moved to a new state.
 
 ### `commentOnTicket`
 
-**Required** Should the job comment on the shortcut ticket?
+**Optional** Should the job comment on the shortcut ticket?
+**Default** `false`
 
 ## Example usage
 
 ```yaml
-uses: actions/hello-world-javascript-action@v1.1
+uses: twinenyc/gh-action-shortcut-releases@v1.0.0
 with:
   shortcutAccessToken: ${{ secrets.SHORTCUT_ACCESS_TOKEN }}
   shortcutCompletedStateId: 999999999

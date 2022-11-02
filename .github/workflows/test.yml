@@ -1,0 +1,17 @@
+on:
+  release:
+    types: ["published"]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to test this workflow
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Shortcut workflow
+        uses: ./ # Uses an action in the root directory
+        with:
+          shortcutAccessToken: ${secrets.SHORTCUT_ACCESS_TOKEN}
+          shortcutCompletedStateId: 500003738
+          commentOnTicket: true

@@ -1,23 +1,26 @@
-# Hello world javascript action
+# GitHub action: Shortcut Release workflow
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
 
 ## Inputs
 
-### `who-to-greet`
+### `shortcutAccessToken`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Required** The shortcut access token
 
-## Outputs
+### `shortcutCompletedStateId`
 
-### `time`
+**Required** The ID of the shortcut state to transition tickets to.
 
-The time we greeted you.
+### `commentOnTicket`
+
+**Required** Should the job comment on the shortcut ticket?
 
 ## Example usage
 
 ```yaml
 uses: actions/hello-world-javascript-action@v1.1
 with:
-  who-to-greet: 'Mona the Octocat'
+  shortcutAccessToken: ${{ secrets.SHORTCUT_ACCESS_TOKEN }}
+  shortcutCompletedStateId: 999999999
+  commentOnTicket: true
 ```

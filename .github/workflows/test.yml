@@ -1,3 +1,5 @@
+name: "Test workflow"
+
 on:
   release:
     types: ["edited"]

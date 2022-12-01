@@ -2,6 +2,9 @@ import { ShortcutClient } from '@useshortcut/client'
 import core from '@actions/core'
 import github from '@actions/github'
 
+const ACTION_RELEASE = 'release'
+const ACTION_DRAFT_RELEASE = 'draft-release'
+
 function extractStoryIds(content) {
   const regex = /(?<=sc|sc-|ch|ch-)\d{1,7}/gi
   const all = content.match(regex)
@@ -9,22 +12,29 @@ function extractStoryIds(content) {
   return unique
 }
 
-async function main(releaseBody, tag, releaseUrl, runId, shortcutAccessToken, completedStateId, commentOnTicket = true) {
+async function main(releaseBody, releaseUrl, runId, tag, action, shortcutAccessToken, targetShortcutStateId) {
   const shortcut = new ShortcutClient(shortcutAccessToken)
   const storyIds = extractStoryIds(releaseBody)
 
   for (const id of storyIds) {
-    if (completedStateId !== 'undefined') {
+    // move the ticket to the desired state if present
+    if (targetShortcutStateId !== '') {
       const stateId = parseInt(completedStateId)
-      await shortcut.updateStory(id, {
-        workflow_state_id: stateId
-      })
+      await shortcut.updateStory(id, { workflow_state_id: stateId })
     }
-    if (commentOnTicket) {
-      const commentText = `## 🚀 Release ${tag}\nLink: ${releaseUrl}\rrun id: ${runId}`
-      await shortcut.createStoryComment(id, {
-        text: commentText
-      })
+
+    // comment on the ticket according to the action
+    switch (action) {
+      case ACTION_RELEASE:
+        await shortcut.createStoryComment(id, {
+          text: `## 🚢 Released ${tag}\nLink: ${releaseUrl}\rRun id: ${runId}`
+        })
+        break;
+      case ACTION_DRAFT_RELEASE:
+        await shortcut.createStoryComment(id, {
+          text: `## 📦 Added to draft release ${tag}\nLink: ${releaseUrl}\rRun id: ${runId}`
+        })
+        break;
     }
   }
 
@@ -32,19 +42,22 @@ async function main(releaseBody, tag, releaseUrl, runId, shortcutAccessToken, co
 }
 
 try {
-  // make sure we are in a release event
+  // retrieve github action context and input
   const { payload, eventName, runId } = github.context;
   if (eventName !== "release") {
-    console.warn("Skipping action because this is not a release event")
-    process.exit(0)
+    core.setFailed("This action can only be run in a release workflow event type")
   }
 
-  const { body, html_url, tag_name } = payload.release;
-  const token = core.getInput('shortcutAccessToken')
-  const completedStateId = core.getInput('shortcutCompletedStateId')
-  const commentOnTicket = core.getInput('commentOnTicket')
+  const { body, html_url } = payload.release;
+
+  // collect all the inputs that were manually passed in
+  const action = core.getInput('action')
+  const tag = core.getInput('tag')
+  const shortcutAccessToken = core.getInput('shortcutAccessToken')
+  const targetShortcutStateId = core.getInput('targetShortcutStateId')
   
-  main(body, tag_name, html_url, runId, token, completedStateId, commentOnTicket)
+  // execute the action
+  main(body, html_url, runId, tag, action, shortcutAccessToken, targetShortcutStateId)
     .then((stories) => {
       console.log("Updated stories", stories)
     })

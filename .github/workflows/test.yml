@@ -12,8 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Shortcut workflow
-        uses: twinenyc/gh-action-shortcut-releases@v1.0.0
+        uses: ./
         with:
+          action: draft-release
+          tag: ${{ github.event.inputs.release-tag }}
           shortcutAccessToken: ${{ secrets.SHORTCUT_ACCESS_TOKEN }}
-          shortcutCompletedStateId: 500003738
-          commentOnTicket: true
+          targetShortcutStateId: 500003738

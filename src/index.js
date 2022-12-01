@@ -43,7 +43,11 @@ async function main(releaseBody, releaseUrl, runId, tag, action, shortcutAccessT
 
 try {
   // retrieve github action context and input
-  const { payload, runId } = github.context;
+  const { payload, eventName, runId } = github.context;
+  if (eventName !== "release") {
+    core.setFailed("This action can only be run in a release workflow event type")
+  }
+
   const { body, html_url } = payload.release;
 
   // collect all the inputs that were manually passed in

@@ -1,0 +1,8 @@
+[config]
+enable_comment_approval = true
+enable_auto_approval = true
+auto_approve_for_low_review_effort = 1
+
+[review_agent]
+approve_pr_on_self_review = true
+demand_self_review = true
